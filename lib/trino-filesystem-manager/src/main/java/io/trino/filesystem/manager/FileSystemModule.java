@@ -32,8 +32,9 @@ import io.trino.filesystem.azure.AzureFileSystemModule;
 import io.trino.filesystem.cache.CacheFileSystemFactory;
 import io.trino.filesystem.cache.CacheKeyProvider;
 import io.trino.filesystem.cache.CachingHostAddressProvider;
+import io.trino.filesystem.cache.CachingHostAddressProviderConfig;
+import io.trino.filesystem.cache.CachingHostAddressProviderFactory;
 import io.trino.filesystem.cache.DefaultCacheKeyProvider;
-import io.trino.filesystem.cache.DefaultCachingHostAddressProvider;
 import io.trino.filesystem.cache.TrinoFileSystemCache;
 import io.trino.filesystem.gcs.GcsFileSystemFactory;
 import io.trino.filesystem.gcs.GcsFileSystemModule;
@@ -128,7 +129,8 @@ public class FileSystemModule
             factories.addBinding("file").to(LocalFileSystemFactory.class);
         }
 
-        newOptionalBinder(binder, CachingHostAddressProvider.class).setDefault().to(DefaultCachingHostAddressProvider.class).in(Scopes.SINGLETON);
+        configBinder(binder).bindConfig(CachingHostAddressProviderConfig.class);
+        newOptionalBinder(binder, CachingHostAddressProvider.class).setDefault().toProvider(CachingHostAddressProviderFactory.class).in(Scopes.SINGLETON);
         newOptionalBinder(binder, CacheKeyProvider.class).setDefault().to(DefaultCacheKeyProvider.class).in(Scopes.SINGLETON);
 
         newOptionalBinder(binder, TrinoFileSystemCache.class);

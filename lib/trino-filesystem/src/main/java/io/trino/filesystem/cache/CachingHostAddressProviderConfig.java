@@ -16,13 +16,34 @@ package io.trino.filesystem.cache;
 import io.airlift.configuration.Config;
 import io.airlift.configuration.ConfigDescription;
 
-public class ConsistentHashingHostAddressProviderConfig
+public class CachingHostAddressProviderConfig
 {
+    public enum ProviderType
+    {
+        DEFAULT,
+        CONSISTENT_HASH,
+        REPLICATED
+    }
+
+    private ProviderType providerType = ProviderType.CONSISTENT_HASH;
     private int preferredHostsCount = 2;
 
+    @Config("fs.cache.host-address-provider")
+    @ConfigDescription("Type of caching host address provider (DEFAULT, CONSISTENT_HASH, REPLICATED)")
+    public CachingHostAddressProviderConfig setProviderType(ProviderType providerType)
+    {
+        this.providerType = providerType;
+        return this;
+    }
+
+    public ProviderType getProviderType()
+    {
+        return this.providerType;
+    }
+
     @Config("fs.cache.preferred-hosts-count")
-    @ConfigDescription("The number of preferred nodes for caching a file. Defaults to 2.")
-    public ConsistentHashingHostAddressProviderConfig setPreferredHostsCount(int preferredHostsCount)
+    @ConfigDescription("Number of preferred hosts for consistent hashing")
+    public CachingHostAddressProviderConfig setPreferredHostsCount(int preferredHostsCount)
     {
         this.preferredHostsCount = preferredHostsCount;
         return this;
