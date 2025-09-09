@@ -98,6 +98,7 @@ public class IcebergConfig
     private int metadataParallelism = 8;
     private boolean bucketExecutionEnabled = true;
     private boolean fileBasedConflictDetectionEnabled = true;
+    private List<String> fileSystemCacheTables = ImmutableList.of();
 
     public CatalogType getCatalogType()
     {
@@ -607,6 +608,19 @@ public class IcebergConfig
     public IcebergConfig setFileBasedConflictDetectionEnabled(boolean fileBasedConflictDetectionEnabled)
     {
         this.fileBasedConflictDetectionEnabled = fileBasedConflictDetectionEnabled;
+        return this;
+    }
+
+    public List<String> getFileSystemCacheTables()
+    {
+        return fileSystemCacheTables;
+    }
+
+    @Config("iceberg.filesystem-cache.tables")
+    @ConfigDescription("Comma-separated list of table names (schema.table) to enable filesystem caching for. Empty list means cache all tables.")
+    public IcebergConfig setFileSystemCacheTables(List<String> fileSystemCacheTables)
+    {
+        this.fileSystemCacheTables = ImmutableList.copyOf(fileSystemCacheTables);
         return this;
     }
 }
